@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.*;
 
 public class App {
 
@@ -22,6 +23,7 @@ public class App {
 
         System.out.println("Loaded Reviews:");
         reviews.forEach(System.out::println);
+        // shorthand for: for (Review review: reviews) { } "for loop"
 
         System.out.println("\n--- Reviews with price between 20 and 100 ---");
         filterByPriceRange(reviews, 20, 100).forEach(System.out::println);
@@ -105,6 +107,7 @@ public class App {
      *         If no reviews match, the result is an empty list.
      */
     public static List<Review> findByKeywordInTitle(List<Review> reviews, String keyword) {
+        // functional approach, way to filter out reviews, more consolidated
         return reviews.stream() // Begin the stream pipeline
                 .filter(r ->
                     r.getTitle() != null &&
@@ -116,8 +119,10 @@ public class App {
 
 
     public static List<Review> filterByPriceRange(List<Review> reviews, double min, double max) {
-        //TODO - you need to implement this using a functional approach!
-        return null;
+        //TO-DO - you need to implement this using a functional approach!
+        return reviews.stream()
+                .filter(r -> r.getPrice() >= min && r.getPrice() <= max)
+                .collect(Collectors.toList());
     }
 
     public static Map<String, Long> countByProductId(List<Review> reviews) {
@@ -150,8 +155,14 @@ public class App {
 
 
     public static List<String> getHomeProductIdsUnder100(List<Review> reviews) {
-        //TODO - you need to implement this using a functional approach!
-        return new ArrayList<String>();                             // Final list of productIds
+        //TO-DO - you need to implement this using a functional approach!
+        return reviews.stream()
+                .filter(r -> "Home".equals(r.getCategory()))
+                .filter(r -> r.getPrice() < 100)
+                .sorted(Comparator.comparingDouble(Review::getPrice))
+                .map(Review::getProductId)
+                .collect(Collectors.toList());
+        //return new ArrayList<String>();                             // Final list of productIds
     }
 
     
